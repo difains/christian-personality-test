@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>크리스천 MBTI 설문</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+    <!-- 시작 화면 -->
+    <div id="start-page" class="page active">
+        <div class="container">
+            <div class="header">
+                <h1>크리스천 MBTI</h1>
+                <div class="subtitle">
+                    <p>칼뱅의 기독교강요와 메튜 헨리의 실제적 경건과 성경적 순종의 원리로 만들어졌습니다.</p>
+                    <p class="copyright">Copyright by John</p>
+                </div>
+            </div>
+            <div class="intro-content">
+                <p>하나님과의 관계에서 나타나는 당신의 신앙 성향을 알아보세요.</p>
+                <p>총 20문항, 약 10분 소요됩니다.</p>
+            </div>
+            <button class="btn-primary" onclick="startSurvey()">설문 시작하기</button>
+        </div>
+    </div>
+
+    <!-- 설문 페이지들 -->
+    <div id="survey-pages" style="display: none;">
+        <!-- 문항들이 JavaScript로 동적 생성됩니다 -->
+    </div>
+
+    <!-- 결과 페이지 -->
+    <div id="result-page" class="page" style="display: none;">
+        <div class="container">
+            <div class="result-header">
+                <h2>당신의 크리스천 MBTI 결과</h2>
+            </div>
+            <div id="result-content" class="result-content">
+                <!-- 결과 내용이 JavaScript로 생성됩니다 -->
+            </div>
+            <div class="result-actions">
+                <button class="btn-primary" onclick="saveAsImage()">결과 이미지로 저장</button>
+                <button class="btn-secondary" onclick="restartSurvey()">다시 하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 파일 업로드 영역 (숨김) -->
+    <input type="file" id="file-input" style="display: none;" accept="image/*" multiple>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* 헤더 스타일 */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #4a5568;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.subtitle p {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.copyright {
+    font-size: 0.9rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* 시작 화면 */
+.intro-content {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.intro-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+/* 설문 카드 */
+.question-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.question-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.option {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.option:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+    transform: translateY(-2px);
+}
+
+.option.selected {
+    border-color: #667eea;
+    background: #667eea;
+    color: white;
+}
+
+.option input[type="radio"] {
+    display: none;
+}
+
+.option-text {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.page-info {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+/* 버튼 스타일 */
+.btn-primary, .btn-secondary {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    margin-left: 10px;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 결과 페이지 */
+.result-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-header h2 {
+    font-size: 2rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.result-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.result-type {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-type h3 {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.result-type .type-name {
+    font-size: 1.5rem;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.result-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 25px;
+    text-align: center;
+    font-style: italic;
+}
+
+.result-details h4 {
+    color: #667eea;
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.result-details p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.result-details ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.result-details li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.result-actions {
+    text-align: center;
+}
+
+/* 반응형 디자인 */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header, .question-card, .intro-content {
+        padding: 20px;
+    }
+    
+    .question-title {
+        font-size: 1.1rem;
+    }
+    
+    .option {
+        padding: 15px;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        max-width: 700px;
+        padding: 25px;
+    }
+    
+    .header h1 {
+        font-size: 2.2rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .container {
+        max-width: 800px;
+        padding: 30px;
+    }
+    
+    .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+
+/* 아이패드 프로 12인치 전용 */
+@media screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    .container {
+        max-width: 900px;
+    }
+    
+    .options {
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+    
+    .question-card {
+        padding: 40px;
+    }
+}
