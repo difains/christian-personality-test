@@ -11,8 +11,14 @@ const firebaseConfig = {
 };
 
 // Firebase 초기화 (Firestore만)
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+let db = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    console.log('Firebase 초기화 성공');
+} catch (error) {
+    console.log('Firebase 초기화 실패:', error);
+}
 
 // 설문 데이터
 const surveyQuestions = [
@@ -402,3 +408,520 @@ const mbtiResults = {
         bibleVerse: "모든 것을 적당하게 하고 질서 있게 하라 (고린도전서 14:40)",
         prayer: "하나님, 질서 있고 효율적으로 공동체를 이끄는 지혜를 주소서."
     },
+    "ESFJ": {
+        name: "사랑의 목자형",
+        description: "하나님의 사랑으로 성도들을 돌보며 공동체를 섬기는 신앙인",
+        characteristics: [
+            "성도들의 필요에 세심한 관심",
+            "조화롭고 따뜻한 공동체 분위기",
+            "전통적 가치와 관계 중시",
+            "협력적이고 배려하는 리더십"
+        ],
+        strengths: "따뜻한 돌봄과 조화로운 공동체 형성",
+        growth: "객관적 판단력과 건강한 경계 설정",
+        bibleVerse: "너희가 서로 사랑하면 이로써 모든 사람이 너희가 내 제자인 줄 알리라 (요한복음 13:35)",
+        prayer: "주님, 형제자매들을 진심으로 사랑하고 돌보게 하소서."
+    },
+    "ENFJ": {
+        name: "영감을 주는 목회자형",
+        description: "하나님의 비전을 제시하며 사람들의 영적 성장을 돕는 신앙인",
+        characteristics: [
+            "카리스마 있는 영적 리더십",
+            "개인의 영적 성장에 관심",
+            "공동체의 비전 제시와 동기부여",
+            "감화력 있는 소통 능력"
+        ],
+        strengths: "영감을 주는 리더십과 개인 성장 도움",
+        growth: "객관적 분석력과 자기 돌봄 능력",
+        bibleVerse: "그가 어떤 사람은 사도로, 어떤 사람은 선지자로, 어떤 사람은 복음 전하는 자로, 어떤 사람은 목사와 교사로 삼으셨으니 (에베소서 4:11)",
+        prayer: "하나님, 영혼들을 영적으로 성장시키는 목자의 마음을 주소서."
+    },
+    "ENTJ": {
+        name: "전략적 지휘관형",
+        description: "하나님 나라 확장을 위해 전략적으로 사역을 이끄는 신앙인",
+        characteristics: [
+            "장기적 비전과 전략적 사고",
+            "효율적이고 목표지향적 사역",
+            "강력한 리더십과 추진력",
+            "체계적이고 논리적인 접근"
+        ],
+        strengths: "전략적 비전과 강력한 실행력",
+        growth: "감정적 공감과 개인적 배려 능력",
+        bibleVerse: "계획들이 의논함으로 성취되나니 모략이 많은 자의 말을 들을지니라 (잠언 20:18)",
+        prayer: "주님, 하나님 나라 확장을 위한 전략적 지혜를 주소서."
+    }
+};
+
+// 전역 변수
+let currentQuestion = 0;
+let userAnswers = [];
+let testStartTime = null;
+let sessionId = null;
+
+// 유틸리티 함수들
+function generateSessionId() {
+    return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    const container = document.getElementById('toast-container');
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+
+function showLoading() {
+    document.getElementById('loading-overlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loading-overlay').style.display = 'none';
+}
+
+// 테스트 시작
+function startTest() {
+    testStartTime = new Date();
+    sessionId = generateSessionId();
+    
+    console.log('테스트 시작:', { sessionId, startTime: testStartTime });
+    
+    document.getElementById('main-screen').classList.remove('active');
+    document.getElementById('question-screens').style.display = 'block';
+    
+    createQuestionScreens();
+    showQuestion(1);
+}
+
+// 문항 화면 생성
+function createQuestionScreens() {
+    const container = document.getElementById('question-screens');
+    container.innerHTML = '';
+    
+    surveyQuestions.forEach((question, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'screen';
+        questionDiv.id = `question-${question.id}`;
+        
+        const progress = ((index + 1) / surveyQuestions.length) * 100;
+        
+        questionDiv.innerHTML = `
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <span class="progress-text">${index + 1} / ${surveyQuestions.length}</span>
+                            <span class="progress-text">${Math.round(progress)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    ${index > 0 ? `
+                        <button class="back-button" onclick="prevQuestion()">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            이전
+                        </button>
+                    ` : ''}
+                </div>
+                
+                <div class="question-card">
+                    <div class="question-text">
+                        ${question.question}
+                    </div>
+                    
+                    <div class="options-container">
+                        ${question.options.map((option, optIndex) => `
+                            <button class="option-button" 
+                                    onclick="selectOption(${index}, '${option.type}', this)"
+                                    data-option="${option.type}">
+                                ${option.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="question-nav">
+                    <button class="next-button" 
+                            onclick="nextQuestion()" 
+                            id="next-btn-${question.id}" 
+                            disabled>
+                        ${index === surveyQuestions.length - 1 ? '결과 보기' : '다음'}
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(questionDiv);
+    });
+}
+
+// 질문 표시
+function showQuestion(questionNumber) {
+    const screens = document.querySelectorAll('#question-screens .screen');
+    screens.forEach(screen => screen.classList.remove('active'));
+    
+    const targetScreen = document.getElementById(`question-${questionNumber}`);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+        currentQuestion = questionNumber;
+        
+        // 이전 답변 복원
+        if (userAnswers[questionNumber - 1]) {
+            const selectedOption = targetScreen.querySelector(`[data-option="${userAnswers[questionNumber - 1]}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+                const nextButton = document.getElementById(`next-btn-${questionNumber}`);
+                if (nextButton) {
+                    nextButton.disabled = false;
+                }
+            }
+        }
+    }
+}
+
+// 옵션 선택
+function selectOption(questionIndex, optionType, buttonElement) {
+    userAnswers[questionIndex] = optionType;
+    
+    console.log('옵션 선택:', { questionIndex: questionIndex + 1, optionType });
+    
+    // UI 업데이트
+    const allOptions = buttonElement.parentNode.querySelectorAll('.option-button');
+    allOptions.forEach(btn => btn.classList.remove('selected'));
+    buttonElement.classList.add('selected');
+    
+    // 다음 버튼 활성화
+    const nextButton = document.getElementById(`next-btn-${questionIndex + 1}`);
+    if (nextButton) {
+        nextButton.disabled = false;
+    }
+    
+    // 햅틱 피드백
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // 자동 진행
+    setTimeout(() => {
+        if (currentQuestion < surveyQuestions.length) {
+            nextQuestion();
+        } else {
+            showResult();
+        }
+    }, 800);
+}
+
+// 다음 질문
+function nextQuestion() {
+    if (currentQuestion < surveyQuestions.length) {
+        showQuestion(currentQuestion + 1);
+    } else {
+        showResult();
+    }
+}
+
+// 이전 질문
+function prevQuestion() {
+    if (currentQuestion > 1) {
+        showQuestion(currentQuestion - 1);
+    }
+}
+
+// MBTI 계산
+function calculateMBTI() {
+    const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    
+    userAnswers.forEach(answer => {
+        if (answer) counts[answer]++;
+    });
+    
+    const result = 
+        (counts.E > counts.I ? 'E' : 'I') +
+        (counts.S > counts.N ? 'S' : 'N') +
+        (counts.T > counts.F ? 'T' : 'F') +
+        (counts.J > counts.P ? 'J' : 'P');
+    
+    return result;
+}
+
+// 결과 표시
+async function showResult() {
+    const mbtiType = calculateMBTI();
+    const result = mbtiResults[mbtiType];
+    const testDuration = Math.round((new Date() - testStartTime) / 1000);
+    
+    // 결과 데이터 준비
+    const resultData = {
+        mbtiType,
+        answers: userAnswers,
+        duration: testDuration,
+        completedAt: new Date(),
+        sessionId
+    };
+    
+    // Firebase에 결과 저장 (선택적)
+    if (db) {
+        try {
+            await db.collection('test_results').add({
+                ...resultData,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            console.log('결과 저장 완료');
+        } catch (error) {
+            console.log('결과 저장 실패:', error);
+        }
+    }
+    
+    // 로컬 스토리지에 백업
+    const localResults = JSON.parse(localStorage.getItem('test_results') || '[]');
+    localResults.push(resultData);
+    localStorage.setItem('test_results', JSON.stringify(localResults));
+    
+    // 화면 전환
+    document.getElementById('question-screens').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'flex';
+    document.getElementById('result-screen').classList.add('active');
+    
+    const resultContainer = document.querySelector('.result-container');
+    resultContainer.innerHTML = `
+        <div class="result-header">
+            <h2 class="result-title">당신의 크리스천 MBTI</h2>
+        </div>
+        
+        <div class="result-content" id="result-content-for-capture">
+            <div class="result-type-section">
+                <div class="result-mbti">${mbtiType}</div>
+                <div class="result-type-name">${result.name}</div>
+                <div class="result-description">"${result.description}"</div>
+            </div>
+            
+            <div class="result-details">
+                <div class="detail-section">
+                    <h4>
+                        <span>🌟</span>
+                        주요 특징
+                    </h4>
+                    <ul>
+                        ${result.characteristics.map(char => `<li>${char}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>
+                        <span>💪</span>
+                        신앙적 강점
+                    </h4>
+                    <p>${result.strengths}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>
+                        <span>🌱</span>
+                        성장 포인트
+                    </h4>
+                    <p>${result.growth}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>
+                        <span>📖</span>
+                        추천 말씀
+                    </h4>
+                    <p style="font-style: italic; color: var(--primary-color);">${result.bibleVerse}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>
+                        <span>🙏</span>
+                        기도제목
+                    </h4>
+                    <p style="font-style: italic;">${result.prayer}</p>
+                </div>
+                
+                <div style="margin-top: 32px; padding: 24px; background: var(--background-color); border-radius: 16px; text-align: center;">
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">
+                        테스트 완료 시간: ${Math.floor(testDuration / 60)}분 ${testDuration % 60}초
+                    </p>
+                    <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">
+                        세션 ID: ${sessionId}
+                    </p>
+                    <p style="font-size: 12px; color: var(--text-tertiary);">
+                        칼뱅의 기독교강요와 메튜 헨리의 실제적 경건 원리를 바탕으로 제작
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-actions">
+            <button class="action-button primary" onclick="saveResult()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 1V11M4 7L8 11L12 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                결과 저장하기
+            </button>
+            <button class="action-button secondary" onclick="shareResult()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 8L10 4M6 8L10 12M6 8H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                공유하기
+            </button>
+            <button class="action-button secondary" onclick="restartTest()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M1 4V10C1 10.5304 1.21071 11.0391 1.58579 11.4142C1.96086 11.7893 2.46957 12 3 12H13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 8L13 12L9 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                다시 하기
+            </button>
+        </div>
+    `;
+    
+    console.log('테스트 완료:', resultData);
+}
+
+// 결과 저장
+async function saveResult() {
+    const button = event.target;
+    const originalHTML = button.innerHTML;
+    
+    showLoading();
+    button.innerHTML = '<div class="loading-spinner"></div> 저장 중...';
+    button.disabled = true;
+    
+    try {
+        const resultContent = document.getElementById('result-content-for-capture');
+        
+        const canvas = await html2canvas(resultContent, {
+            allowTaint: true,
+            useCORS: true,
+            backgroundColor: '#ffffff',
+            scale: 2,
+            width: resultContent.offsetWidth,
+            height: resultContent.offsetHeight,
+            logging: false
+        });
+        
+        const imageData = canvas.toDataURL('image/png', 1.0);
+        const link = document.createElement('a');
+        link.download = `크리스천_MBTI_${calculateMBTI()}_${new Date().getTime()}.png`;
+        link.href = imageData;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        button.innerHTML = '✅ 저장 완료!';
+        showToast('결과가 이미지로 저장되었습니다!', 'success');
+        
+        if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+        }
+        
+    } catch (error) {
+        console.error('저장 오류:', error);
+        button.innerHTML = '❌ 저장 실패';
+        showToast('저장 중 오류가 발생했습니다.', 'error');
+    } finally {
+        hideLoading();
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.disabled = false;
+        }, 3000);
+    }
+}
+
+// 결과 공유
+function shareResult() {
+    const mbtiType = calculateMBTI();
+    const result = mbtiResults[mbtiType];
+    
+    const shareData = {
+        title: '크리스천 MBTI 결과',
+        text: `나의 크리스천 MBTI는 ${mbtiType} (${result.name})입니다!\n\n"${result.description}"\n\n📖 ${result.bibleVerse}`,
+        url: window.location.href
+    };
+    
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        navigator.share(shareData).catch(err => {
+            console.log('공유 실패:', err);
+            fallbackShare(shareData);
+        });
+    } else {
+        fallbackShare(shareData);
+    }
+}
+
+// 대체 공유 방법
+function fallbackShare(shareData) {
+    const shareText = `${shareData.text}\n\n테스트 해보기: ${shareData.url}`;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showToast('결과가 클립보드에 복사되었습니다!', 'success');
+        }).catch(() => {
+            legacyCopyToClipboard(shareText);
+        });
+    } else {
+        legacyCopyToClipboard(shareText);
+    }
+}
+
+// 레거시 클립보드 복사
+function legacyCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showToast('결과가 클립보드에 복사되었습니다!', 'success');
+    } catch (err) {
+        console.error('클립보드 복사 실패:', err);
+        showToast('클립보드 복사에 실패했습니다.', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// 테스트 재시작
+function restartTest() {
+    currentQuestion = 0;
+    userAnswers = [];
+    testStartTime = null;
+    sessionId = null;
+    
+    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('result-screen').classList.remove('active');
+    document.getElementById('question-screens').style.display = 'none';
+    document.getElementById('main-screen').classList.add('active');
+}
+
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('크리스천 MBTI 앱 로드 완료');
+    
+    // 터치 이벤트 최적화
+    document.addEventListener('touchstart', function() {}, { passive: true });
+    
+    // 뒤로가기 방지 (선택적)
+    window.addEventListener('beforeunload', function(e) {
+        if (currentQuestion > 0 && currentQuestion <= surveyQuestions.length) {
+            e.preventDefault();
+            e.returnValue = '테스트를 종료하시겠습니까? 진행 상황이 저장되지 않습니다.';
+        }
+    });
+});
