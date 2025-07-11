@@ -1,5 +1,4 @@
 // Firebase 설정 (Firebase 콘솔에서 복사한 설정으로 교체)
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDGT-IZL91RECZSQl3NfcN9aU4loPmTvEk",
   authDomain: "christian-personality-test.firebaseapp.com",
@@ -20,207 +19,227 @@ try {
     console.log('Firebase 초기화 실패:', error);
 }
 
-// 설문 데이터
+// 척도형 설문 데이터 (16퍼스널 방식)
 const surveyQuestions = [
     {
         id: 1,
-        question: "하나님과의 관계에서 영적 성장을 위해 가장 중요하다고 생각하는 것은?",
-        options: [
-            { text: "정기적인 말씀 묵상과 개인 기도 시간", type: "I" },
-            { text: "성도들과의 교제와 공동체 예배", type: "E" },
-            { text: "체계적인 신학 공부와 교리 학습", type: "T" },
-            { text: "하나님의 사랑을 느끼는 감정적 체험", type: "F" }
-        ]
+        leftOption: {
+            text: "조용한 곳에서 혼자 말씀을 묵상하며 기도하는 것을 선호한다",
+            type: "I"
+        },
+        rightOption: {
+            text: "다른 성도들과 함께 모여 소리 내어 기도하고 은혜를 나누는 것을 선호한다",
+            type: "E"
+        }
     },
     {
         id: 2,
-        question: "성경을 읽을 때 당신의 접근 방식은?",
-        options: [
-            { text: "전체적인 맥락과 하나님의 구원 계획을 파악한다", type: "N" },
-            { text: "구체적인 교훈과 실생활 적용점을 찾는다", type: "S" },
-            { text: "논리적 해석과 원어 연구를 중시한다", type: "T" },
-            { text: "하나님의 마음과 감정을 느끼려 한다", type: "F" }
-        ]
+        leftOption: {
+            text: "성경을 읽을 때 구체적인 교훈과 실생활 적용점을 찾는 것에 집중한다",
+            type: "S"
+        },
+        rightOption: {
+            text: "성경을 읽을 때 전체적인 맥락과 하나님의 구원 계획을 파악하는 것에 집중한다",
+            type: "N"
+        }
     },
     {
         id: 3,
-        question: "교회에서 새로운 사역을 시작할 때 당신의 우선순위는?",
-        options: [
-            { text: "충분한 계획과 준비를 통한 체계적 접근", type: "J" },
-            { text: "상황에 따라 유연하게 조정할 수 있는 여지", type: "P" },
-            { text: "성도들의 필요와 감정을 먼저 고려", type: "F" },
-            { text: "사역의 효율성과 목표 달성", type: "T" }
-        ]
+        leftOption: {
+            text: "신앙적 결정을 할 때 성경적 원리와 논리적 판단을 중시한다",
+            type: "T"
+        },
+        rightOption: {
+            text: "신앙적 결정을 할 때 성령의 감동과 마음의 평안을 중시한다",
+            type: "F"
+        }
     },
     {
         id: 4,
-        question: "기도할 때 당신이 선호하는 방식은?",
-        options: [
-            { text: "조용한 곳에서 혼자 깊이 묵상하며", type: "I" },
-            { text: "다른 성도들과 함께 소리 내어", type: "E" },
-            { text: "정해진 시간과 순서에 따라 규칙적으로", type: "J" },
-            { text: "그때그때 마음이 이끄는 대로 자유롭게", type: "P" }
-        ]
+        leftOption: {
+            text: "교회 사역을 할 때 충분한 계획과 준비를 통한 체계적 접근을 선호한다",
+            type: "J"
+        },
+        rightOption: {
+            text: "교회 사역을 할 때 상황에 따라 유연하게 조정할 수 있는 접근을 선호한다",
+            type: "P"
+        }
     },
     {
         id: 5,
-        question: "하나님의 뜻을 분별할 때 가장 신뢰하는 방법은?",
-        options: [
-            { text: "성경 말씀과 기도를 통한 개인적 확신", type: "I" },
-            { text: "목회자와 성숙한 성도들의 조언", type: "E" },
-            { text: "성경적 원리와 논리적 판단", type: "T" },
-            { text: "성령의 감동과 마음의 평안", type: "F" }
-        ]
+        leftOption: {
+            text: "하나님의 뜻을 분별할 때 성경 말씀과 기도를 통한 개인적 확신을 신뢰한다",
+            type: "I"
+        },
+        rightOption: {
+            text: "하나님의 뜻을 분별할 때 목회자와 성숙한 성도들의 조언을 신뢰한다",
+            type: "E"
+        }
     },
     {
         id: 6,
-        question: "전도할 때 당신이 주로 사용하는 접근법은?",
-        options: [
-            { text: "개인적 간증과 삶의 변화 이야기", type: "F" },
-            { text: "논리적 변증과 기독교 세계관 설명", type: "T" },
-            { text: "구체적인 성경 구절과 실제 사례", type: "S" },
-            { text: "하나님 나라의 비전과 영원한 소망", type: "N" }
-        ]
+        leftOption: {
+            text: "하나님의 성품 중 변하지 않는 신실함과 약속 이행에 가장 감동받는다",
+            type: "S"
+        },
+        rightOption: {
+            text: "하나님의 성품 중 무한한 창조력과 새로운 가능성에 가장 감동받는다",
+            type: "N"
+        }
     },
     {
         id: 7,
-        question: "교회 공동체에서 갈등이 생겼을 때 당신의 대응은?",
-        options: [
-            { text: "당사자들과 개별적으로 만나 이야기를 듣는다", type: "I" },
-            { text: "공개적인 자리에서 함께 대화의 장을 만든다", type: "E" },
-            { text: "성경적 원칙에 따라 명확한 해결책을 제시한다", type: "T" },
-            { text: "모든 사람의 감정을 배려하며 화해를 도모한다", type: "F" }
-        ]
+        leftOption: {
+            text: "전도할 때 논리적 변증과 기독교 세계관 설명을 주로 사용한다",
+            type: "T"
+        },
+        rightOption: {
+            text: "전도할 때 개인적 간증과 삶의 변화 이야기를 주로 사용한다",
+            type: "F"
+        }
     },
     {
         id: 8,
-        question: "하나님의 성품 중 가장 감동받는 부분은?",
-        options: [
-            { text: "변하지 않는 신실함과 약속 이행", type: "S" },
-            { text: "무한한 창조력과 새로운 가능성", type: "N" },
-            { text: "완전한 공의와 거룩함", type: "T" },
-            { text: "무조건적인 사랑과 은혜", type: "F" }
-        ]
+        leftOption: {
+            text: "하나님께 순종하는 것은 성경 말씀에 대한 절대적 복종이라고 생각한다",
+            type: "J"
+        },
+        rightOption: {
+            text: "하나님께 순종하는 것은 성령의 인도하심을 따르는 것이라고 생각한다",
+            type: "P"
+        }
     },
     {
         id: 9,
-        question: "성경 공부 모임을 인도할 때 당신의 스타일은?",
-        options: [
-            { text: "미리 준비한 계획에 따라 체계적으로", type: "J" },
-            { text: "참석자들의 반응을 보며 유연하게 조정", type: "P" },
-            { text: "깊이 있는 해석과 적용에 집중", type: "I" },
-            { text: "활발한 토론과 나눔을 격려", type: "E" }
-        ]
+        leftOption: {
+            text: "교회 사역에 참여할 때 혼자서 집중할 수 있는 준비 업무를 선호한다",
+            type: "I"
+        },
+        rightOption: {
+            text: "교회 사역에 참여할 때 사람들과 직접 만나는 접촉 사역을 선호한다",
+            type: "E"
+        }
     },
     {
         id: 10,
-        question: "신앙생활에서 가장 큰 기쁨을 느끼는 순간은?",
-        options: [
-            { text: "하나님의 말씀이 깊이 깨달아질 때", type: "T" },
-            { text: "하나님의 사랑을 체험할 때", type: "F" },
-            { text: "계획한 일이 하나님의 뜻대로 이루어질 때", type: "J" },
-            { text: "예상치 못한 하나님의 은혜를 경험할 때", type: "P" }
-        ]
+        leftOption: {
+            text: "예배 중 설교를 들을 때 구체적인 실천 방안과 예시에 집중한다",
+            type: "S"
+        },
+        rightOption: {
+            text: "예배 중 설교를 들을 때 하나님 나라의 비전과 소망에 집중한다",
+            type: "N"
+        }
     },
     {
         id: 11,
-        question: "예배 중 설교를 들을 때 당신의 집중 포인트는?",
-        options: [
-            { text: "말씀의 논리적 구조와 신학적 깊이", type: "T" },
-            { text: "개인적 적용과 삶의 변화", type: "F" },
-            { text: "구체적인 실천 방안과 예시", type: "S" },
-            { text: "하나님 나라의 비전과 소망", type: "N" }
-        ]
+        leftOption: {
+            text: "신앙생활에서 하나님의 말씀이 깊이 깨달아질 때 가장 큰 기쁨을 느낀다",
+            type: "T"
+        },
+        rightOption: {
+            text: "신앙생활에서 하나님의 사랑을 체험할 때 가장 큰 기쁨을 느낀다",
+            type: "F"
+        }
     },
     {
         id: 12,
-        question: "교회 사역에 참여할 때 선호하는 역할은?",
-        options: [
-            { text: "혼자서 집중할 수 있는 준비 업무", type: "I" },
-            { text: "사람들과 직접 만나는 접촉 사역", type: "E" },
-            { text: "정확하고 세밀한 관리 업무", type: "S" },
-            { text: "창의적이고 새로운 기획 업무", type: "N" }
-        ]
+        leftOption: {
+            text: "신앙생활에서 계획한 일이 하나님의 뜻대로 이루어질 때 기쁨을 느낀다",
+            type: "J"
+        },
+        rightOption: {
+            text: "신앙생활에서 예상치 못한 하나님의 은혜를 경험할 때 기쁨을 느낀다",
+            type: "P"
+        }
     },
     {
         id: 13,
-        question: "하나님께 순종하는 것에 대한 당신의 이해는?",
-        options: [
-            { text: "성경 말씀에 대한 절대적 복종", type: "J" },
-            { text: "성령의 인도하심을 따르는 것", type: "P" },
-            { text: "하나님의 뜻을 정확히 이해하고 행하는 것", type: "T" },
-            { text: "하나님을 사랑하는 마음으로 기꺼이 따르는 것", type: "F" }
-        ]
+        leftOption: {
+            text: "영적 성장을 위해 개인 경건의 시간과 말씀 묵상이 가장 도움이 된다",
+            type: "I"
+        },
+        rightOption: {
+            text: "영적 성장을 위해 소그룹 모임과 성도 교제가 가장 도움이 된다",
+            type: "E"
+        }
     },
     {
         id: 14,
-        question: "영적 성장을 위해 가장 도움이 되는 활동은?",
-        options: [
-            { text: "개인 경건의 시간과 말씀 묵상", type: "I" },
-            { text: "소그룹 모임과 성도 교제", type: "E" },
-            { text: "체계적인 성경 공부와 신학 서적", type: "T" },
-            { text: "찬양과 기도를 통한 영적 체험", type: "F" }
-        ]
+        leftOption: {
+            text: "하나님의 인도하심은 미래에 대한 구체적인 계획을 세우는 것이라고 생각한다",
+            type: "S"
+        },
+        rightOption: {
+            text: "하나님의 인도하심은 하나님 나라의 큰 그림을 보는 것이라고 생각한다",
+            type: "N"
+        }
     },
     {
         id: 15,
-        question: "하나님의 인도하심을 받는다는 것은?",
-        options: [
-            { text: "미래에 대한 구체적인 계획을 세우는 것", type: "S" },
-            { text: "하나님 나라의 큰 그림을 보는 것", type: "N" },
-            { text: "명확한 기준에 따라 판단하는 것", type: "T" },
-            { text: "하나님과의 친밀한 관계 속에서 이끄심을 받는 것", type: "F" }
-        ]
+        leftOption: {
+            text: "영적 성장을 위해 체계적인 성경 공부와 신학 서적이 가장 도움이 된다",
+            type: "T"
+        },
+        rightOption: {
+            text: "영적 성장을 위해 찬양과 기도를 통한 영적 체험이 가장 도움이 된다",
+            type: "F"
+        }
     },
     {
         id: 16,
-        question: "교회에서 의사결정을 할 때 중요하게 생각하는 것은?",
-        options: [
-            { text: "충분한 시간을 갖고 신중하게 결정", type: "J" },
-            { text: "상황 변화에 따라 언제든 수정 가능하도록", type: "P" },
-            { text: "과거 경험과 검증된 방법 활용", type: "S" },
-            { text: "새로운 가능성과 혁신적 접근", type: "N" }
-        ]
+        leftOption: {
+            text: "교회에서 의사결정을 할 때 충분한 시간을 갖고 신중하게 결정하는 것이 중요하다",
+            type: "J"
+        },
+        rightOption: {
+            text: "교회에서 의사결정을 할 때 상황 변화에 따라 언제든 수정 가능하도록 하는 것이 중요하다",
+            type: "P"
+        }
     },
     {
         id: 17,
-        question: "성경의 약속들에 대한 당신의 관점은?",
-        options: [
-            { text: "하나님의 신실하심에 대한 확신", type: "S" },
-            { text: "아직 이루어지지 않은 소망에 대한 기대", type: "N" },
-            { text: "조건과 원칙이 명확한 약속", type: "T" },
-            { text: "하나님 사랑의 표현으로서의 약속", type: "F" }
-        ]
+        leftOption: {
+            text: "다른 성도를 섬길 때 조용히 뒤에서 실질적으로 돕는 것을 선호한다",
+            type: "I"
+        },
+        rightOption: {
+            text: "다른 성도를 섬길 때 적극적으로 다가가서 관계를 맺는 것을 선호한다",
+            type: "E"
+        }
     },
     {
         id: 18,
-        question: "다른 성도를 섬길 때 당신의 접근 방식은?",
-        options: [
-            { text: "그들의 필요를 미리 파악하고 준비해서", type: "J" },
-            { text: "그때그때 필요에 따라 즉석에서", type: "P" },
-            { text: "조용히 뒤에서 실질적으로 돕는다", type: "I" },
-            { text: "적극적으로 다가가서 관계를 맺는다", type: "E" }
-        ]
+        leftOption: {
+            text: "성경의 약속들을 하나님의 신실하심에 대한 확신으로 받아들인다",
+            type: "S"
+        },
+        rightOption: {
+            text: "성경의 약속들을 아직 이루어지지 않은 소망에 대한 기대로 받아들인다",
+            type: "N"
+        }
     },
     {
         id: 19,
-        question: "하나님을 찬양할 때 가장 은혜받는 방식은?",
-        options: [
-            { text: "가사의 의미를 깊이 묵상하며", type: "T" },
-            { text: "감정을 자유롭게 표현하며", type: "F" },
-            { text: "익숙한 찬송가로 안정감 있게", type: "S" },
-            { text: "새로운 곡으로 신선하게", type: "N" }
-        ]
+        leftOption: {
+            text: "하나님을 찬양할 때 가사의 의미를 깊이 묵상하며 은혜받는다",
+            type: "T"
+        },
+        rightOption: {
+            text: "하나님을 찬양할 때 감정을 자유롭게 표현하며 은혜받는다",
+            type: "F"
+        }
     },
     {
         id: 20,
-        question: "신앙의 확신에 대한 당신의 기준은?",
-        options: [
-            { text: "성경 말씀과 교리에 근거한 확신", type: "T" },
-            { text: "하나님과의 관계에서 오는 확신", type: "F" },
-            { text: "과거 경험을 통해 검증된 확신", type: "S" },
-            { text: "미래에 대한 소망으로서의 확신", type: "N" }
-        ]
+        leftOption: {
+            text: "다른 성도를 섬길 때 그들의 필요를 미리 파악하고 준비해서 돕는다",
+            type: "J"
+        },
+        rightOption: {
+            text: "다른 성도를 섬길 때 그때그때 필요에 따라 즉석에서 돕는다",
+            type: "P"
+        }
     }
 ];
 
@@ -498,7 +517,7 @@ function startTest() {
     showQuestion(1);
 }
 
-// 문항 화면 생성
+// 문항 화면 생성 (척도형)
 function createQuestionScreens() {
     const container = document.getElementById('question-screens');
     container.innerHTML = '';
@@ -534,17 +553,46 @@ function createQuestionScreens() {
                 
                 <div class="question-card">
                     <div class="question-text">
-                        ${question.question}
+                        문항 ${index + 1}
                     </div>
                     
-                    <div class="options-container">
-                        ${question.options.map((option, optIndex) => `
-                            <button class="option-button" 
-                                    onclick="selectOption(${index}, '${option.type}', this)"
-                                    data-option="${option.type}">
-                                ${option.text}
-                            </button>
-                        `).join('')}
+                    <div class="scale-container">
+                        <div class="scale-options">
+                            <div class="scale-option left">
+                                <div class="option-label">A</div>
+                                <div class="option-text">${question.leftOption.text}</div>
+                            </div>
+                            <div class="scale-option right">
+                                <div class="option-label">B</div>
+                                <div class="option-text">${question.rightOption.text}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="scale-selector">
+                            <div class="scale-labels-row">
+                                <span class="scale-label">매우 A</span>
+                                <span class="scale-label">약간 A</span>
+                                <span class="scale-label">조금 A</span>
+                                <span class="scale-label">중립</span>
+                                <span class="scale-label">조금 B</span>
+                                <span class="scale-label">약간 B</span>
+                                <span class="scale-label">매우 B</span>
+                            </div>
+                            
+                            <div class="scale-points-row">
+                                ${[1, 2, 3, 4, 5, 6, 7].map(point => `
+                                    <button class="scale-point-btn ${point === 4 ? 'neutral' : ''}" 
+                                            onclick="selectScale(${index}, ${point}, '${question.leftOption.type}', '${question.rightOption.type}', this)"
+                                            data-point="${point}">
+                                        ${point}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="scale-description">
+                            두 성향 중 어느 쪽에 더 가까운지 선택해주세요. 4번은 중립(둘 다 비슷함)입니다.
+                        </div>
                     </div>
                 </div>
                 
@@ -566,39 +614,42 @@ function createQuestionScreens() {
     });
 }
 
-// 질문 표시
-function showQuestion(questionNumber) {
-    const screens = document.querySelectorAll('#question-screens .screen');
-    screens.forEach(screen => screen.classList.remove('active'));
+// 척도 선택 함수
+function selectScale(questionIndex, scalePoint, leftType, rightType, buttonElement) {
+    // 척도 점수를 MBTI 타입으로 변환
+    let selectedType;
+    let intensity;
     
-    const targetScreen = document.getElementById(`question-${questionNumber}`);
-    if (targetScreen) {
-        targetScreen.classList.add('active');
-        currentQuestion = questionNumber;
-        
-        // 이전 답변 복원
-        if (userAnswers[questionNumber - 1]) {
-            const selectedOption = targetScreen.querySelector(`[data-option="${userAnswers[questionNumber - 1]}"]`);
-            if (selectedOption) {
-                selectedOption.classList.add('selected');
-                const nextButton = document.getElementById(`next-btn-${questionNumber}`);
-                if (nextButton) {
-                    nextButton.disabled = false;
-                }
-            }
-        }
+    if (scalePoint <= 3) {
+        selectedType = leftType;
+        intensity = 4 - scalePoint; // 3=약간, 2=보통, 1=강함
+    } else if (scalePoint >= 5) {
+        selectedType = rightType;
+        intensity = scalePoint - 4; // 1=약간, 2=보통, 3=강함
+    } else {
+        selectedType = null; // 중립
+        intensity = 0;
     }
-}
-
-// 옵션 선택
-function selectOption(questionIndex, optionType, buttonElement) {
-    userAnswers[questionIndex] = optionType;
     
-    console.log('옵션 선택:', { questionIndex: questionIndex + 1, optionType });
+    // 답변 저장 (척도 정보 포함)
+    userAnswers[questionIndex] = {
+        type: selectedType,
+        intensity: intensity,
+        scalePoint: scalePoint,
+        leftType: leftType,
+        rightType: rightType
+    };
+    
+    console.log('척도 선택:', {
+        questionIndex: questionIndex + 1,
+        scalePoint,
+        selectedType,
+        intensity
+    });
     
     // UI 업데이트
-    const allOptions = buttonElement.parentNode.querySelectorAll('.option-button');
-    allOptions.forEach(btn => btn.classList.remove('selected'));
+    const allScaleButtons = buttonElement.parentNode.querySelectorAll('.scale-point-btn');
+    allScaleButtons.forEach(btn => btn.classList.remove('selected'));
     buttonElement.classList.add('selected');
     
     // 다음 버튼 활성화
@@ -622,6 +673,31 @@ function selectOption(questionIndex, optionType, buttonElement) {
     }, 800);
 }
 
+// 질문 표시
+function showQuestion(questionNumber) {
+    const screens = document.querySelectorAll('#question-screens .screen');
+    screens.forEach(screen => screen.classList.remove('active'));
+    
+    const targetScreen = document.getElementById(`question-${questionNumber}`);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+        currentQuestion = questionNumber;
+        
+        // 이전 답변 복원
+        if (userAnswers[questionNumber - 1]) {
+            const answer = userAnswers[questionNumber - 1];
+            const selectedButton = targetScreen.querySelector(`[data-point="${answer.scalePoint}"]`);
+            if (selectedButton) {
+                selectedButton.classList.add('selected');
+                const nextButton = document.getElementById(`next-btn-${questionNumber}`);
+                if (nextButton) {
+                    nextButton.disabled = false;
+                }
+            }
+        }
+    }
+}
+
 // 다음 질문
 function nextQuestion() {
     if (currentQuestion < surveyQuestions.length) {
@@ -638,32 +714,61 @@ function prevQuestion() {
     }
 }
 
-// MBTI 계산
+// MBTI 계산 (척도 기반)
 function calculateMBTI() {
-    const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    const intensities = { E: [], I: [], S: [], N: [], T: [], F: [], J: [], P: [] };
     
     userAnswers.forEach(answer => {
-        if (answer) counts[answer]++;
+        if (answer && answer.type) {
+            scores[answer.type] += answer.intensity;
+            intensities[answer.type].push(answer.intensity);
+        }
     });
     
-    const result = 
-        (counts.E > counts.I ? 'E' : 'I') +
-        (counts.S > counts.N ? 'S' : 'N') +
-        (counts.T > counts.F ? 'T' : 'F') +
-        (counts.J > counts.P ? 'J' : 'P');
+    // 각 차원별 결과 계산
+    const dimensions = [
+        { types: ['E', 'I'], result: scores.E > scores.I ? 'E' : 'I' },
+        { types: ['S', 'N'], result: scores.S > scores.N ? 'S' : 'N' },
+        { types: ['T', 'F'], result: scores.T > scores.F ? 'T' : 'F' },
+        { types: ['J', 'P'], result: scores.J > scores.P ? 'J' : 'P' }
+    ];
     
-    return result;
+    const mbtiType = dimensions.map(d => d.result).join('');
+    
+    // 각 차원별 강도 계산 (백분율)
+    const percentages = {};
+    dimensions.forEach(dim => {
+        const [type1, type2] = dim.types;
+        const total = scores[type1] + scores[type2];
+        if (total > 0) {
+            percentages[type1] = Math.round((scores[type1] / total) * 100);
+            percentages[type2] = Math.round((scores[type2] / total) * 100);
+        } else {
+            percentages[type1] = 50;
+            percentages[type2] = 50;
+        }
+    });
+    
+    return {
+        type: mbtiType,
+        scores: scores,
+        percentages: percentages
+    };
 }
 
 // 결과 표시
 async function showResult() {
-    const mbtiType = calculateMBTI();
+    const mbtiResult = calculateMBTI();
+    const mbtiType = mbtiResult.type;
     const result = mbtiResults[mbtiType];
     const testDuration = Math.round((new Date() - testStartTime) / 1000);
     
     // 결과 데이터 준비
     const resultData = {
         mbtiType,
+        scores: mbtiResult.scores,
+        percentages: mbtiResult.percentages,
         answers: userAnswers,
         duration: testDuration,
         completedAt: new Date(),
@@ -704,6 +809,37 @@ async function showResult() {
                 <div class="result-mbti">${mbtiType}</div>
                 <div class="result-type-name">${result.name}</div>
                 <div class="result-description">"${result.description}"</div>
+            </div>
+            
+            <div class="personality-scores">
+                <div class="score-item">
+                    <div class="score-pair">E - I</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${mbtiResult.percentages.E || 0}%"></div>
+                    </div>
+                    <div class="score-percentage">${mbtiType[0]}: ${mbtiResult.percentages[mbtiType[0]]}%</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-pair">S - N</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${mbtiResult.percentages.S || 0}%"></div>
+                    </div>
+                    <div class="score-percentage">${mbtiType[1]}: ${mbtiResult.percentages[mbtiType[1]]}%</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-pair">T - F</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${mbtiResult.percentages.T || 0}%"></div>
+                    </div>
+                    <div class="score-percentage">${mbtiType[2]}: ${mbtiResult.percentages[mbtiType[2]]}%</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-pair">J - P</div>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${mbtiResult.percentages.J || 0}%"></div>
+                    </div>
+                    <div class="score-percentage">${mbtiType[3]}: ${mbtiResult.percentages[mbtiType[3]]}%</div>
+                </div>
             </div>
             
             <div class="result-details">
@@ -757,7 +893,7 @@ async function showResult() {
                         세션 ID: ${sessionId}
                     </p>
                     <p style="font-size: 12px; color: var(--text-tertiary);">
-                        칼뱅의 기독교강요와 메튜 헨리의 실제적 경건 원리를 바탕으로 제작
+                        7점 척도 방식으로 측정된 과학적 결과 • 칼뱅의 기독교강요와 메튜 헨리의 실제적 경건 원리 기반
                     </p>
                 </div>
             </div>
@@ -813,7 +949,8 @@ async function saveResult() {
         
         const imageData = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
-        link.download = `크리스천_MBTI_${calculateMBTI()}_${new Date().getTime()}.png`;
+        const mbtiResult = calculateMBTI();
+        link.download = `크리스천_MBTI_${mbtiResult.type}_${new Date().getTime()}.png`;
         link.href = imageData;
         
         document.body.appendChild(link);
@@ -842,12 +979,12 @@ async function saveResult() {
 
 // 결과 공유
 function shareResult() {
-    const mbtiType = calculateMBTI();
-    const result = mbtiResults[mbtiType];
+    const mbtiResult = calculateMBTI();
+    const result = mbtiResults[mbtiResult.type];
     
     const shareData = {
         title: '크리스천 MBTI 결과',
-        text: `나의 크리스천 MBTI는 ${mbtiType} (${result.name})입니다!\n\n"${result.description}"\n\n📖 ${result.bibleVerse}`,
+        text: `나의 크리스천 MBTI는 ${mbtiResult.type} (${result.name})입니다!\n\n"${result.description}"\n\n📖 ${result.bibleVerse}\n\n7점 척도로 측정된 과학적 결과`,
         url: window.location.href
     };
     
@@ -912,7 +1049,7 @@ function restartTest() {
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('크리스천 MBTI 앱 로드 완료');
+    console.log('크리스천 MBTI 척도형 앱 로드 완료');
     
     // 터치 이벤트 최적화
     document.addEventListener('touchstart', function() {}, { passive: true });
